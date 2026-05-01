@@ -1,8 +1,4 @@
-#!/usr/bin/env python3
-"""
-Exercise 3: Profile Management with Image Upload
-A Flask web application for managing user profiles with image uploads.
-"""
+# Exercise 3: Profile Management with Image Upload
 
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import sqlite3
