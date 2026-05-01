@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ user.display_name or user.username }} - Profile</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .profile-card { text-align: center; padding: 30px; border: 1px solid #ddd; border-radius: 12px; }
+        .profile-image { width: 150px; height: 150px; border-radius: 50%; margin: 0 auto 20px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 60px; }
+        .profile-image img { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; }
+        h1 { color: #333; margin-bottom: 5px; }
+        .username { color: #666; margin-bottom: 20px; }
+        .info { text-align: left; margin: 20px 0; }
+        .info-row { padding: 10px; border-bottom: 1px solid #eee; }
+        .btn { display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; margin: 5px; }
+        .btn:hover { background: #0056b3; }
+        .flash { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .flash.success { background: #d4edda; color: #155724; }
+    </style>
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="profile-card">
+        <div class="profile-image">
+            {% if user.image_filename %}
+                <img src="{{ url_for('static', filename='uploads/' + user.image_filename) }}" alt="Profile Picture">
+            {% else %}
+                
+            {% endif %}
+        </div>
+        <h1>{{ user.display_name or user.username }}</h1>
+        <p class="username">@{{ user.username }}</p>
+
+        <div class="info">
+            <div class="info-row"><strong>Email:</strong> {{ user.email or 'Not set' }}</div>
+            <div class="info-row"><strong>Member since:</strong> {{ user.created_at }}</div>
+            <div class="info-row"><strong>Last updated:</strong> {{ user.updated_at }}</div>
+        </div>
+
+        <a href="{{ url_for('edit_profile', username=user.username) }}" class="btn">✏️ Edit Profile</a>
+        <a href="{{ url_for('index') }}" class="btn">← Back to List</a>
+    </div>
+</body>
+</html>

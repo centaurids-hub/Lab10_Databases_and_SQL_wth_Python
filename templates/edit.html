@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Profile - {{ user.username }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+        h1 { color: #333; }
+        .form-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"], input[type="email"] { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        input[type="file"] { padding: 8px; }
+        .current-image { width: 100px; height: 100px; border-radius: 50%; margin: 10px 0; }
+        .btn { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .btn:hover { background: #0056b3; }
+        .btn-danger { background: #dc3545; }
+        .btn-danger:hover { background: #c82333; }
+        .flash { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .flash.success { background: #d4edda; color: #155724; }
+        .flash.error { background: #f8d7da; color: #721c24; }
+        .help-text { color: #666; font-size: 0.9em; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <h1>✏️ Edit Profile</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label>Current Profile Picture:</label>
+            {% if user.image_filename %}
+                <img src="{{ url_for('static', filename='uploads/' + user.image_filename) }}" class="current-image" alt="Current">
+                <form action="{{ url_for('delete_image', username=user.username) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Remove image?')">🗑️ Remove Image</button>
+                </form>
+            {% else %}
+                <p>No profile picture set.</p>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="profile_image">Upload New Picture:</label>
+            <input type="file" name="profile_image" id="profile_image" accept=".jpg,.jpeg,.png,.gif">
+            <p class="help-text">Allowed formats: JPG, PNG, GIF (Max 16MB)</p>
+        </div>
+
+        <div class="form-group">
+            <label for="display_name">Display Name:</label>
+            <input type="text" name="display_name" id="display_name" value="{{ user.display_name or '' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email" value="{{ user.email or '' }}">
+        </div>
+
+        <button type="submit" class="btn">💾 Save Changes</button>
+        <a href="{{ url_for('profile', username=user.username) }}" class="btn">← Cancel</a>
+    </form>
+</body>
+</html>
